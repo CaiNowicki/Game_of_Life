@@ -22,6 +22,7 @@ def update_grid(grid):
             else:
                 if live_neighbors == 3:
                     cell.change_state()
+    grid.iterate_generation()
 
 
 
