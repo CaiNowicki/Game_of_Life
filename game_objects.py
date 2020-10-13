@@ -15,7 +15,6 @@ class Grid:
         self.generation = 0
         self.n = n
 
-
     def __getitem__(self, i, j):
         if i == self.n:
             i = 0
