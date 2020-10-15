@@ -12,7 +12,7 @@ def create_interactive_grid(n, grid):
             x.append(xvalue + 0.5)
             y.append(yvalue + 0.5)
 
-    fig = go.FigureWidget()
+    fig = go.Figure()
     scatter = go.Scatter(x=x, y=y, marker=dict(size=30, symbol=1, color="blue"), line=dict(width=0),
                          mode='markers')
     fig.add_trace(scatter)
@@ -35,12 +35,10 @@ def create_interactive_grid(n, grid):
         cell = grid.__getitem__(x, y)
         cell.change_state()
         c = list(scatter.marker.color)
-        s = list(scatter.marker.size)
-        for i in points.point_inds:
-            c[i] = "black"
+        for point in points.point_inds:
+            c[point] = "black"
             with fig.batch_update():
                 scatter.marker.color = c
-                scatter.marker.size = s
 
     scatter.on_click(update_cell)
     return fig

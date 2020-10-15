@@ -1,13 +1,12 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from app_scripts.interface import create_grid
-from app_scripts.game_objects import Cell, Grid
+import dash_bootstrap_components as dbc
 
+meta_tags = [
+    {'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}
+]
+external_stylesheets = [dbc.themes.SPACELAB]
 
-
-
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, meta_tags=meta_tags)
+app.config.suppress_callback_exceptions = True
+app.title = "Conway's Game of Life"
+server = app.server
