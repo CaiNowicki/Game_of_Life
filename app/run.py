@@ -5,6 +5,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app, server
+from pages import index
 
 navbar = dbc.NavbarSimple(
     brand="John Conway's Game of Life in Plotly and Dash",
@@ -44,6 +45,14 @@ app.layout = html.Div([
     html.Hr(),
     footer
 ])
+
+@app.callback(Output('page-content', 'children'),
+              [Input('url', 'pathname')])
+def display_page(pathname):
+    if pathname == '/':
+        return index.layout
+    else:
+        return dcc.Markdown('## Page Not Found')
 
 if __name__ == '__main__':
     app.run_server(debug=True)
