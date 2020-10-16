@@ -15,6 +15,7 @@ column1 = dbc.Col(
             """
 
            ##John Conway's Game of Life
+           Create in Python using Plotly-dash
             """
         ),
         dcc.Graph(figure=game)
