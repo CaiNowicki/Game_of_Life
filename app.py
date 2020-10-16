@@ -6,8 +6,10 @@ meta_tags = [
 ]
 external_stylesheets = [dbc.themes.SPACELAB]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, meta_tags=meta_tags,
-                suppress_callback_exceptions=True)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, meta_tags=meta_tags)
 app.config.suppress_callback_exceptions = True
 app.title = "Conway's Game of Life"
 server = app.server
+
+if __name__ == '__main__':
+    app.run_server(debug=True)

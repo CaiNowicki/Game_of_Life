@@ -1,6 +1,8 @@
 import plotly.graph_objects as go
+#import sys
+#sys.path.append(r'C:\Users\caino\PycharmProjects\compsci\Game_of_Life')
 
-from game_objects import Cell, Grid
+from app_scripts.game_objects import Cell, Grid
 
 
 def create_interactive_grid(n, grid):

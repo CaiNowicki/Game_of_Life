@@ -11,14 +11,11 @@ game = create_interactive_grid(25, grid)
 
 column1 = dbc.Col(
     [
-        dcc.Markdown(
-            """
-
-           ##John Conway's Game of Life
-           Create in Python using Plotly-dash
+        dcc.Markdown("""John Conway's Game of Life
+           Created in Python using Plotly-dash
             """
         ),
-        dcc.Graph(figure=game)
+        dcc.Graph(figure=game, config={"displayModeBar": False})
     ]
 )
 
