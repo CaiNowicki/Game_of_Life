@@ -8,7 +8,7 @@ from app import app, server
 from pages import index
 
 navbar = dbc.NavbarSimple(
-    brand="John Conway's Game of Life in Plotly and Dash",
+    brand="John Conway's Game of Life",
     #brand_href='/',
     #children=[
     #    dbc.NavItem(dcc.Link('Predictions', href='/predictions', className='nav-link')),

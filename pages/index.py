@@ -1,6 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
+from dash.dependencies import Input, Output
 from app_scripts.game_objects import Grid
 from app_scripts.interface import create_interactive_grid
 from app import app

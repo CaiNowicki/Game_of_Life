@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
-#import sys
-#sys.path.append(r'C:\Users\caino\PycharmProjects\compsci\Game_of_Life')
+import sys
+sys.path.append(r'C:\Users\caino\PycharmProjects\compsci\Game_of_Life')
 
 from app_scripts.game_objects import Cell, Grid
 
@@ -14,7 +14,7 @@ def create_interactive_grid(n, grid):
             x.append(xvalue + 0.5)
             y.append(yvalue + 0.5)
 
-    fig = go.Figure()
+    fig = go.FigureWidget()
     scatter = go.Scatter(x=x, y=y, marker=dict(size=30, symbol=1, color="blue"), line=dict(width=0),
                          mode='markers')
     fig.add_trace(scatter)
@@ -34,8 +34,8 @@ def create_interactive_grid(n, grid):
         for point in points.points_inds:
             x = point.x - 0.5
             y = point.y - 0.5
-        cell = grid.__getitem__(x, y)
-        cell.change_state()
+            cell = grid.__getitem__(x,y)
+            cell.change_state()
         c = list(scatter.marker.color)
         for point in points.point_inds:
             c[point] = "black"
