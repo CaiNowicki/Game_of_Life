@@ -23,14 +23,14 @@ column1 = dbc.Col(
 layout = dbc.Row([column1])
 
 
-# @app.callback(Output('live-update-graph', 'figure'),
-#               [Input('interval-component', 'n_intervals')])
-# def update_grid_live(n, grid=None):
-#     if not grid:
-#         grid = Grid(25)
-#         game = create_grid(25, grid)
-#     else:
-#         grid.update_grid()
-#         grid.generation += 1
-#         game = create_grid(25, grid)
-#     return game
+@app.callback(Output('live-update-graph', 'figure'),
+              [Input('interval-component', 'n_intervals')])
+def update_grid_live(n, grid=None):
+    if not grid:
+        grid = Grid(25)
+        game = create_grid(25, grid)
+    else:
+        grid.update_grid()
+        grid.generation += 1
+        game = create_grid(25, grid)
+    return game
