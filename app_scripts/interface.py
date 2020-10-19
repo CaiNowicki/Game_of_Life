@@ -80,6 +80,5 @@ def create_grid(n, grid):
                      range=[0, n], scaleanchor="x", constrain="domain", showticklabels=False, ticks="")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
                      range=[0, n], constrain="domain", scaleanchor="y", showticklabels=False, ticks="")
-    fig.write_html(r"C:\Users\caino\PycharmProjects\compsci\Game_of_Life\iframe_figures\figure_0.html")
     grid.update_grid()
-    return grid
+    return fig
