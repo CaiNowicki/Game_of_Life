@@ -1,5 +1,8 @@
 import plotly.graph_objects as go
 import sys
+import plotly
+import time
+
 sys.path.append(r'C:\Users\caino\PycharmProjects\compsci\Game_of_Life')
 
 from app_scripts.game_objects import Cell, Grid
@@ -22,9 +25,9 @@ def create_interactive_grid(n, grid):
     fig.update_layout(hovermode="closest", clickmode="event", plot_bgcolor="white", width=1000, height=1000,
                       showlegend=False)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
-                     range=[0, n], scaleanchor="x", constrain="domain", showticklabels = False, ticks = "")
+                     range=[0, n], scaleanchor="x", constrain="domain", showticklabels=False, ticks="")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
-                     range=[0, n], constrain="domain", scaleanchor="y", showticklabels = False, ticks= "")
+                     range=[0, n], constrain="domain", scaleanchor="y", showticklabels=False, ticks="")
 
     def update_cell(trace, points, selector):
         # take in click
@@ -34,7 +37,7 @@ def create_interactive_grid(n, grid):
         for point in points.points_inds:
             x = point.x - 0.5
             y = point.y - 0.5
-            cell = grid.__getitem__(x,y)
+            cell = grid.__getitem__(x, y)
             cell.change_state()
         c = list(scatter.marker.color)
         for point in points.point_inds:
@@ -59,5 +62,24 @@ def clickable(grid):
     # change cell.clickable to True for all cells in grid by calling cell.change_click()
     pass
 
-grid = Grid(25)
-create_interactive_grid(25, grid)
+
+def create_grid(n, grid):
+    fig = go.Figure()
+    for x in range(n):
+        for y in range(n):
+            cell = grid.__getitem__(x, y)
+            loc_x = [x + 0.5]
+            loc_y = [y + 0.5]
+            scatter = go.Scatter(x=loc_x, y=loc_y, marker=dict(size=30, symbol=1, color=cell.color), line=dict(width=0),
+                                 mode='markers')
+            fig.add_trace(scatter)
+
+    fig.update_layout(hovermode=False, clickmode="event", plot_bgcolor="white", width=1000, height=1000,
+                      showlegend=False)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
+                     range=[0, n], scaleanchor="x", constrain="domain", showticklabels=False, ticks="")
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
+                     range=[0, n], constrain="domain", scaleanchor="y", showticklabels=False, ticks="")
+    fig.write_html(r"C:\Users\caino\PycharmProjects\compsci\Game_of_Life\iframe_figures\figure_0.html")
+    grid.update_grid()
+    return grid
