@@ -80,5 +80,4 @@ def create_grid(n, grid):
                      range=[0, n], scaleanchor="x", constrain="domain", showticklabels=False, ticks="")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="black", tickvals=[x for x in range(n)],
                      range=[0, n], constrain="domain", scaleanchor="y", showticklabels=False, ticks="")
-
     return fig

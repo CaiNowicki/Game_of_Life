@@ -14,8 +14,12 @@ column1 = dbc.Col(
            Created in Python using Plotly-dash
             """
                      ),
-        dcc.Graph(figure=game, config={"hideModeBar: True"}),
-        dcc.Interval(id='interval-component', interval=10, n_intervals=0)
+        dcc.Graph(figure=game),
+        dcc.Interval(
+            id='interval-component',
+            interval=1 * 1000,  # in milliseconds
+            n_intervals=0
+        )
     ],
     md=4,
 )
@@ -25,12 +29,9 @@ layout = dbc.Row([column1])
 
 @app.callback(Output('live-update-graph', 'figure'),
               [Input('interval-component', 'n_intervals')])
-def update_grid_live(n, grid=None):
-    if not grid:
-        grid = Grid(25)
-        game = create_grid(25, grid)
-    else:
+def update_grid_live(n):
+    grid = Grid(25)
+    game = create_grid(25, grid)
+    while n < 100:
+        create_grid(25, grid)
         grid.update_grid()
-        grid.generation += 1
-        game = create_grid(25, grid)
-    return game
