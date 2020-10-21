@@ -71,8 +71,7 @@ class Grid:
 
 class Cell:
     def __init__(self):
-        self.state = random.choice([True, False])
-        self.clickable = False
+        self.state = False
         if self.state:
             self.color = "black"
         else:
