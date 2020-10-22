@@ -46,16 +46,21 @@ class Grid:
                 for neighbor in neighbors:
                     if neighbor.state:
                         live_neighbors += 1
+                #if cell is currently alive, it dies with fewer than 2 neighbors or more than 3
                 if cell.state:
                     if 0 < live_neighbors <2:
                         cell.change_state()
+                        print(f'Cell {i},{j} has died')
+                        print(cell.state)
                     elif 4 <= live_neighbors:
                         cell.change_state()
+                        print(f'Cell {i}, {j} has died')
+                        print(cell.state)
+                #if cell is currently dead, it comes alive with exactly 3 neighbors
                 else:
                     if live_neighbors == 3:
                         cell.change_state()
-        if self.generation > 100:
-            return "End of Simulation Reached"
+
 
     def find_neighbors(self, i, j):
         neighbors = []
