@@ -1,6 +1,6 @@
 import pygame
 
-from app_scripts.game_objects import Grid
+from game_objects.game_objects import Grid
 import time
 
 
