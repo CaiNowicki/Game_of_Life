@@ -2,9 +2,7 @@ import numpy as np
 import random
 
 
-def create_cell():
-    cell = Cell()
-    return cell
+
 
 
 class Grid:
@@ -12,7 +10,7 @@ class Grid:
         self.grid = np.ndarray((n, n), dtype="object")
         for i in range(n):
             for j in range(n):
-                self.grid[i][j] = create_cell()
+                self.grid[i][j] = Cell()
         self.generation = 0
         self.n = n
 
@@ -99,3 +97,19 @@ class Cell:
             self.clickable = False
         else:
             self.clickable = True
+
+
+class RandomGrid(Grid):
+    def __init__(self, n):
+        super().__init__(n)
+        for i in range(n):
+            for j in range(n):
+                cell = RandomCell()
+                self.grid[i][j] = cell
+                print(f"Cell {i}, {j} created, is {cell.state}")
+
+
+class RandomCell(Cell):
+    def __init__(self):
+        super().__init__()
+        self.state = random.choice([True, False])

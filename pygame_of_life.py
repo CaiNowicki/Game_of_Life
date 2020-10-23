@@ -1,5 +1,5 @@
 import pygame
-from game_objects.game_objects import Grid
+from game_objects.game_objects import Grid, RandomGrid
 import time
 
 
@@ -93,8 +93,11 @@ display_height = 825
 game_display = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("Conway's Game of Life")
 
+
 # running game
+
 def game_loop():
+    grid = Grid(25)
     # creating image assets and colors
     black = (0, 0, 0)
     white = (255, 255, 255)
@@ -109,13 +112,13 @@ def game_loop():
     reset_button = pygame.image.load("assets/reset_button.png")
     reset_button = pygame.transform.scale(reset_button, (60, 20))
     single_forward_button = pygame.image.load("assets/single_forward.png")
-    single_forward_button = pygame.transform.scale(single_forward_button, (20,20))
+    single_forward_button = pygame.transform.scale(single_forward_button, (20, 20))
     double_forward_button = pygame.image.load("assets/double_forward.png")
-    double_forward_button = pygame.transform.scale(double_forward_button, (20,20))
+    double_forward_button = pygame.transform.scale(double_forward_button, (20, 20))
     single_reverse_button = pygame.image.load("assets/single_reverse.png")
-    single_reverse_button = pygame.transform.scale(single_reverse_button, (20,20))
+    single_reverse_button = pygame.transform.scale(single_reverse_button, (20, 20))
     double_reverse_button = pygame.image.load("assets/double_reverse.png")
-    double_reverse_button = pygame.transform.scale(double_reverse_button, (20,20))
+    double_reverse_button = pygame.transform.scale(double_reverse_button, (20, 20))
 
     clock = pygame.time.Clock()
 
@@ -126,7 +129,6 @@ def game_loop():
     for i in range(len(x_blank)):
         for j in range(len(x_blank)):
             blank_coord_pairs.append((x_blank[i], x_blank[j]))
-
     reset_coord_pairs = blank_coord_pairs.copy()
     filled_coord_pairs = []
 
@@ -138,13 +140,14 @@ def game_loop():
         for i in range(x_blank[x - 1], x_blank[x]):
             # used to assign any number in the square 40x40 to the top left corner of that square
             rounded_dict.update({i: x_blank[x - 1]})
-
+    for i in range(985, 1026):
+        rounded_dict.update({i: 985})
     for value in x_blank:
         pixel_dict.update({x_blank.index(value): value})
         grid_dict.update({value: x_blank.index(value)})
+
     crashed = False
     interactive = True
-    grid = Grid(25)
     sleep_time = 0.5
     while not crashed:
         for event in pygame.event.get():
@@ -154,21 +157,37 @@ def game_loop():
                 # this will fire whether or not game is accepting input to the cells
                 x = event.pos[0]
                 y = event.pos[1]
+                print(x, y)
                 if 1050 < x < 1125 and 100 < y < 120:
                     # clicked on rules
                     show_rules()
                 elif 1025 < x < 1045 and 220 < y < 240:
-                    #clicked on double-slow
+                    # clicked on double-slow
                     sleep_time = 1.25
                 elif 1050 < x < 1070 and 220 < y < 240:
-                    #click on slow
+                    # click on slow
                     sleep_time = 0.75
                 elif 1025 < x < 1045 and 250 < y < 270:
-                    #clicked on single-fast (same as default)
+                    # clicked on single-fast (same as default)
                     sleep_time = 0.5
                 elif 1050 < x < 1070 and 250 < y < 270:
-                    #clicked on double-fast
+                    # clicked on double-fast
                     sleep_time = 0.075
+                elif 1025 < x < 1125 and 300 < y < 320:
+                    # clicked on random, create randomized grid
+                    grid = RandomGrid(25)
+                    filled_coord_pairs = []
+                    blank_coord_pairs = []
+                    for i in range(25):
+                        for j in range(25):
+                            cell = grid.__getitem__(i, j)
+                            x = pixel_dict[i]
+                            y = pixel_dict[j]
+                            if cell.state:
+                                filled_coord_pairs.append((x, y))
+                            else:
+                                blank_coord_pairs.append((x, y))
+
 
             # if the mouse is clicked while the game is accepting input
             if event.type == pygame.MOUSEBUTTONDOWN and interactive:
@@ -202,6 +221,7 @@ def game_loop():
                     filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid,
                                                                          grid_dict, pixel_dict, sleep_time)
                     interactive = True
+
             # if the mouse is clicked while the game is not accepting input
             if event.type == pygame.MOUSEBUTTONDOWN and not interactive:
                 x = event.pos[0]
@@ -218,6 +238,7 @@ def game_loop():
             filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict,
                                                                  pixel_dict, sleep_time)
             if filled_coord_pairs == []:
+                # if grid is empty, stop iterating
                 interactive = True
 
         generations = grid.generation
@@ -234,8 +255,8 @@ def game_loop():
         adjust_text = adjust_box.render("Adjust", True, black, white)
         speed_box = pygame.font.Font(None, 35)
         speed_text = speed_box.render("Speed", True, black, white)
-
-
+        random_box = pygame.font.Font(None, 35)
+        random_text = random_box.render("Random", True, black, (0, 0, 255))
 
         # arrange buttons, text, and cells on display
         game_display.fill(white)
@@ -246,12 +267,13 @@ def game_loop():
         game_display.blit(generations_text, [600, 5])
         game_display.blit(live_cells_text, [900, 5])
         game_display.blit(rules_text, [1025, 100])
-        game_display.blit(adjust_text, [1025, 175])
-        game_display.blit(speed_text, [1025, 200])
+        game_display.blit(adjust_text, [1025, 160])
+        game_display.blit(speed_text, [1025, 185])
         game_display.blit(single_reverse_button, [1050, 220])
         game_display.blit(double_reverse_button, [1025, 220])
         game_display.blit(single_forward_button, [1025, 250])
         game_display.blit(double_forward_button, [1050, 250])
+        game_display.blit(random_text, [1025, 300])
         for pair in blank_coord_pairs:
             game_display.blit(empty_tile, [pair[0], pair[1]])
         for pair in filled_coord_pairs:
@@ -267,6 +289,3 @@ quit()
 
 # TODO:
 # create method to replace blank grid with randomized grid and/or presets
-
-
-
