@@ -7,9 +7,6 @@ def create_cell():
     return cell
 
 
-
-
-
 class Grid:
     def __init__(self, n):
         self.grid = np.ndarray((n, n), dtype="object")
@@ -32,6 +29,7 @@ class Grid:
 
     def update_grid(self):
         self.generation += 1
+        cells_to_update = []
         for i in range(self.n):
             for j in range(self.n):
                 cell = self.__getitem__(i, j)
@@ -48,18 +46,16 @@ class Grid:
                         live_neighbors += 1
                 #if cell is currently alive, it dies with fewer than 2 neighbors or more than 3
                 if cell.state:
-                    if 0 < live_neighbors <2:
-                        cell.change_state()
-                        print(f'Cell {i},{j} has died')
-                        print(cell.state)
-                    elif 4 <= live_neighbors:
-                        cell.change_state()
-                        print(f'Cell {i}, {j} has died')
-                        print(cell.state)
+                    if 2 <= live_neighbors < 4:
+                        pass
+                    else:
+                        cells_to_update.append(cell)
                 #if cell is currently dead, it comes alive with exactly 3 neighbors
                 else:
                     if live_neighbors == 3:
-                        cell.change_state()
+                        cells_to_update.append(cell)
+        for cell in cells_to_update:
+            cell.change_state()
 
 
     def find_neighbors(self, i, j):
@@ -74,6 +70,15 @@ class Grid:
         neighbors.append(self.__getitem__(i + 1, j + 1))
         return neighbors
 
+    def live_cells(self):
+        live_counter = 0
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = self.__getitem__(i, j)
+                if cell.state:
+                    live_counter += 1
+        return live_counter
+
 class Cell:
     def __init__(self):
         self.state = False
@@ -81,7 +86,6 @@ class Cell:
             self.color = "black"
         else:
             self.color = "white"
-
     def change_state(self):
         if self.state:
             self.state = False
