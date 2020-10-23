@@ -1,8 +1,10 @@
 import pygame
+
 from app_scripts.game_objects import Grid
 import time
 
-def iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_dict):
+
+def iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_dict, sleep_time=0.5):
     # checking that grid object contains correct state for cells
     for value in filled_coord_pairs:
         x = grid_dict[value[0]]
@@ -16,7 +18,7 @@ def iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_d
         cell = grid.__getitem__(x, y)
         if cell.state:
             cell.change_state()
-    time.sleep(0.5)
+    time.sleep(sleep_time)
     # step to next generation in grid
     grid.update_grid()
     # assign updated cells back to correct list
@@ -31,7 +33,11 @@ def iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_d
                 filled_coord_pairs.append((x, y))
             else:
                 blank_coord_pairs.append((x, y))
+    tick_sound = pygame.mixer.Sound(file="assets/tick.mp3")
+    tick_sound.set_volume(0.5)
+    tick_sound.play(loops=0)
     return filled_coord_pairs, blank_coord_pairs
+
 
 def show_rules():
     black = (0, 0, 0)
@@ -41,11 +47,11 @@ def show_rules():
     while not closed:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #game window closed
+                # game window closed
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                #X button pressed
+                # X button pressed
                 x = event.pos[0]
                 y = event.pos[1]
                 if 1000 < x < 1100 and 10 < y < 50:
@@ -72,13 +78,13 @@ def show_rules():
 
         game_display.blit(rules_text1, [300, 10])
         game_display.blit(exit_text, [1000, 10])
-        game_display.blit(rules_text2, [100,100])
-        game_display.blit(rules_text3, [100,200])
+        game_display.blit(rules_text2, [100, 100])
+        game_display.blit(rules_text3, [100, 200])
         game_display.blit(rules_text4, [100, 300])
         game_display.blit(rules_text5, [100, 400])
         game_display.blit(rules_text6, [100, 500])
         pygame.display.update()
-    #after escaping while loop by pressing X, go back to game
+    # after escaping while loop by pressing X, go back to game
 
 
 # creating game instance
@@ -104,6 +110,14 @@ def game_loop():
     next_button = pygame.transform.scale(next_button, (60, 20))
     reset_button = pygame.image.load("assets/reset_button.png")
     reset_button = pygame.transform.scale(reset_button, (60, 20))
+    single_forward_button = pygame.image.load("assets/single_forward.png")
+    single_forward_button = pygame.transform.scale(single_forward_button, (20,20))
+    double_forward_button = pygame.image.load("assets/double_forward.png")
+    double_forward_button = pygame.transform.scale(double_forward_button, (20,20))
+    single_reverse_button = pygame.image.load("assets/single_reverse.png")
+    single_reverse_button = pygame.transform.scale(single_reverse_button, (20,20))
+    double_reverse_button = pygame.image.load("assets/double_reverse.png")
+    double_reverse_button = pygame.transform.scale(double_reverse_button, (20,20))
 
     clock = pygame.time.Clock()
 
@@ -133,33 +147,47 @@ def game_loop():
     crashed = False
     interactive = True
     grid = Grid(25)
+    sleep_time = 0.5
     while not crashed:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # this will fire whether or not game is accepting input to the cells
                 x = event.pos[0]
                 y = event.pos[1]
                 if 1050 < x < 1125 and 100 < y < 120:
-                    #clicked on rules
+                    # clicked on rules
                     show_rules()
+                elif 1025 < x < 1045 and 220 < y < 240:
+                    #clicked on double-slow
+                    sleep_time = 1.25
+                elif 1050 < x < 1070 and 220 < y < 240:
+                    #click on slow
+                    sleep_time = 0.75
+                elif 1025 < x < 1045 and 250 < y < 270:
+                    #clicked on single-fast (same as default)
+                    sleep_time = 0.5
+                elif 1050 < x < 1070 and 250 < y < 270:
+                    #clicked on double-fast
+                    sleep_time = 0.075
 
             # if the mouse is clicked while the game is accepting input
             if event.type == pygame.MOUSEBUTTONDOWN and interactive:
                 x = event.pos[0]
                 y = event.pos[1]
                 try:
-                    #if the click is within the grid, assign it to the top left corner of the square it's in
+                    # if the click is within the grid, assign it to the top left corner of the square it's in
                     x = rounded_dict[x]
                     y = rounded_dict[y]
                 except KeyError:
                     pass
                 if (x, y) in blank_coord_pairs:
-                    #if the square is empty, put it in list for black square
+                    # if the square is empty, put it in list for black square
                     blank_coord_pairs.remove((x, y))
                     filled_coord_pairs.append((x, y))
                 elif (x, y) in filled_coord_pairs:
-                    #if square is filled, put it in list for blank square
+                    # if square is filled, put it in list for blank square
                     blank_coord_pairs.append((x, y))
                     filled_coord_pairs.remove((x, y))
                 elif 10 < x < 70 and 5 < y < 25:
@@ -172,10 +200,11 @@ def game_loop():
                     interactive = True
                     grid = Grid(25)
                 elif 140 < x < 200 and 5 < y < 25:
-                    #pressed the next button, iterate just one generation and stop
-                    filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_dict)
+                    # pressed the next button, iterate just one generation and stop
+                    filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid,
+                                                                         grid_dict, pixel_dict, sleep_time)
                     interactive = True
-            #if the mouse is clicked while the game is not accepting input
+            # if the mouse is clicked while the game is not accepting input
             if event.type == pygame.MOUSEBUTTONDOWN and not interactive:
                 x = event.pos[0]
                 y = event.pos[1]
@@ -188,25 +217,43 @@ def game_loop():
                     filled_coord_pairs = []
                     interactive = True
         if not interactive:
-            filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_dict)
+            filled_coord_pairs, blank_coord_pairs = iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict,
+                                                                 pixel_dict, sleep_time)
+            if filled_coord_pairs == []:
+                interactive = True
 
         generations = grid.generation
         live_cells = grid.live_cells()
-        game_display.fill(white)
+
+        # create text boxes
         generations_box = pygame.font.Font(None, 35)
         generations_text = generations_box.render(f"Generations: {generations}", True, black, white)
         live_cells_box = pygame.font.Font(None, 35)
         live_cells_text = generations_box.render(f"Live Cells: {live_cells}", True, black, white)
         rules_box = pygame.font.Font(None, 35)
-        rules_text = rules_box.render("Rules", True, black, (0,0,255))
+        rules_text = rules_box.render("Rules", True, black, (0, 0, 255))
+        adjust_box = pygame.font.Font(None, 35)
+        adjust_text = adjust_box.render("Adjust", True, black, white)
+        speed_box = pygame.font.Font(None, 35)
+        speed_text = speed_box.render("Speed", True, black, white)
 
+
+
+        # arrange buttons, text, and cells on display
+        game_display.fill(white)
         game_display.blit(start_button, [10, 5])
         game_display.blit(stop_button, [75, 5])
         game_display.blit(next_button, [140, 5])
         game_display.blit(reset_button, [205, 5])
         game_display.blit(generations_text, [600, 5])
         game_display.blit(live_cells_text, [900, 5])
-        game_display.blit(rules_text, [1050, 100])
+        game_display.blit(rules_text, [1025, 100])
+        game_display.blit(adjust_text, [1025, 175])
+        game_display.blit(speed_text, [1025, 200])
+        game_display.blit(single_reverse_button, [1050, 220])
+        game_display.blit(double_reverse_button, [1025, 220])
+        game_display.blit(single_forward_button, [1025, 250])
+        game_display.blit(double_forward_button, [1050, 250])
         for pair in blank_coord_pairs:
             game_display.blit(empty_tile, [pair[0], pair[1]])
         for pair in filled_coord_pairs:
@@ -215,6 +262,12 @@ def game_loop():
         pygame.display.update()
         clock.tick(60)
 
+
 game_loop()
 pygame.quit()
 quit()
+
+# TODO:
+# create method to replace blank grid with randomized grid and/or presets
+# create buttons to adjust tick
+
