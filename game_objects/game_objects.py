@@ -1,10 +1,6 @@
 import numpy as np
 import random
 
-
-
-
-
 class Grid:
     def __init__(self, n):
         self.grid = np.ndarray((n, n), dtype="object")
@@ -106,7 +102,6 @@ class RandomGrid(Grid):
             for j in range(n):
                 cell = RandomCell()
                 self.grid[i][j] = cell
-                print(f"Cell {i}, {j} created, is {cell.state}")
 
 
 class RandomCell(Cell):
