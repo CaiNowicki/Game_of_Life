@@ -31,9 +31,9 @@ def iterate_grid(filled_coord_pairs, blank_coord_pairs, grid, grid_dict, pixel_d
                 filled_coord_pairs.append((x, y))
             else:
                 blank_coord_pairs.append((x, y))
-    # tick_sound = pygame.mixer.Sound(file="assets/tick.mp3")
-    # tick_sound.set_volume(0.5)
-    # tick_sound.play(loops=0)
+    tick_sound = pygame.mixer.Sound(file="assets/tick.mp3")
+    tick_sound.set_volume(0.5)
+    tick_sound.play(loops=0)
     return filled_coord_pairs, blank_coord_pairs
 
 
