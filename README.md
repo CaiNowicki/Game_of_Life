@@ -22,3 +22,4 @@ More about logic gates in the Game of Life can be found in this publication: <ht
 ### My Code
 My version of the Game of Life works slightly differently others, because the grid wraps around, rather than having the edges as dead cells. Some well-known patterns will therefore not produce the expected.  
 This application is written in Python3 using the PyGame library (<https://www.pygame.org/docs/>) and converted to an executable using cx_Freeze (<https://cx-freeze.readthedocs.io/en/latest/index.html>).
+The zip file contains all of the relevant assets necessary to run the pygame_of_life.exe file which is also included. 
